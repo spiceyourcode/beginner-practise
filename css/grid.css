@@ -3,9 +3,6 @@
     margin: 0;
     box-sizing: border-box;
     max-height: 100vh;
-    
-    
-    
 } 
 
 body{
@@ -20,7 +17,7 @@ body{
     grid-template-areas:
                         "hd hd hd hd hd hd hd hd hd"
                         "mn mn mn mn mn mn mn as as"
-                        "";
+                        "ft ft ft ft ft ft ft ft ft";
 
     gap: 10px;
     margin-top: 0px;

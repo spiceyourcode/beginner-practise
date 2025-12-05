@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messenger-Style Chatbot Widget</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f0f0f0;
+            position: relative;
+        }
+        .chatbot-widget {
+            display: none;
+            width: 350px;
+            height: 500px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            flex-direction: column;
+        }
+        .chatbot-header {
+            background-color: #ff0000;
+            color: #fff;
+            padding: 15px;
+            text-align: center;
+            font-size: 1.2em;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .chatbot-header button {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5em;
+            cursor: pointer;
+        }
+        .chatbot-body {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .chatbot-message {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+        }
+        .chatbot-message.user {
+            justify-content: flex-end;
+        }
+        .chatbot-message.bot {
+            justify-content: flex-start;
+        }
+        .chatbot-message p {
+            max-width: 70%;
+            padding: 10px;
+            border-radius: 5px;
+            position: relative;
+        }
+        .chatbot-message.user p {
+            background-color: #ff0000;
+            color: #fff;
+        }
+        .chatbot-message.bot p {
+            background-color: #e0e0e0;
+            color: #333;
+        }
+        .chatbot-footer {
+            background-color: #f9f9f9;
+            padding: 15px;
+            display: flex;
+            border-top: 1px solid #ddd;
+        }
+        .chatbot-footer input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        .chatbot-footer button {
+            padding: 10px 20px;
+            background-color: #ff0000;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .widget-icon {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #ff0000;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 2em;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .typing-indicator div {
+            width: 8px;
+            height: 8px;
+            margin: 0 2px;
+            background-color: #ff0000;
+            border-radius: 50%;
+            animation: typing 1.5s infinite ease-in-out;
+        }
+        .typing-indicator div:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+        .typing-indicator div:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-10px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="widget-icon" onclick="toggleChatbot()">
+        💬
+    </div>
+    <div class="chatbot-widget" id="chatbot-widget">
+        <div class="chatbot-header">
+            Fancy Chatbot
+            <button onclick="minimizeChatbot()">−</button>
+        </div>
+        <div class="chatbot-body" id="chatbot-body">
+            <div class="chatbot-message bot">
+                <p>Hello! How can I assist you today?</p>
+            </div>
+        </div>
+        <div class="chatbot-footer">
+            <input type="text" id="user-input" placeholder="Type your message...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+        <div class="typing-indicator" id="typing-indicator" style="display: none;">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+
+    <script>
+        function toggleChatbot() {
+            const chatbotWidget = document.getElementById('chatbot-widget');
+            if (chatbotWidget.style.display === 'none' || chatbotWidget.style.display === '') {
+                chatbotWidget.style.display = 'flex';
+            } else {
+                chatbotWidget.style.display = 'none';
+            }
+        }
+
+        function minimizeChatbot() {
+            const chatbotWidget = document.getElementById('chatbot-widget');
+            chatbotWidget.style.display = 'none';
+        }
+
+        function sendMessage() {
+            const userInput = document.getElementById('user-input').value;
+            if (userInput.trim() === '') return;
+
+            const chatbotBody = document.getElementById('chatbot-body');
+            const typingIndicator = document.getElementById('typing-indicator');
+
+            const userMessage = document.createElement('div');
+            userMessage.classList.add('chatbot-message', 'user');
+            userMessage.innerHTML = `<p>${userInput}</p>`;
+            chatbotBody.appendChild(userMessage);
+
+            typingIndicator.style.display = 'flex';
+            chatbotBody.scrollTop = chatbotBody.scrollHeight;
+
+            setTimeout(() => {
+                typingIndicator.style.display = 'none';
+
+                const botMessage = document.createElement('div');
+                botMessage.classList.add('chatbot-message', 'bot');
+                botMessage.innerHTML = `<p>This is a bot response to: "${userInput}"</p>`;
+                chatbotBody.appendChild(botMessage);
+
+                chatbotBody.scrollTop = chatbotBody.scrollHeight;
+            }, 2000);
+
+            document.getElementById('user-input').value = '';
+        }
+    </script>
+</body>
+</html>
