@@ -19,7 +19,7 @@ public class Hello {
 
             show();    
             findEvenOdd(number);
-        }       
+        }
         
     }
     static void show(){
